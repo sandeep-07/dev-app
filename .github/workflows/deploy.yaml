@@ -20,8 +20,9 @@ jobs:
 
       - name: Build, tag, and push image to ECR
         run: |
+          echo {{ vars.AWS_REGION }}
           # Define variables
-          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}"
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}"
 
           # Build Docker image
           docker build -t $IMAGE_URI .
