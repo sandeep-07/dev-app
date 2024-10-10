@@ -13,7 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-          echo {{ vars.AWS_REGION }}
 
       - name: Log in to Amazon ECR
         id: login-ecr
