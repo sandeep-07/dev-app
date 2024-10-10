@@ -21,7 +21,7 @@ jobs:
       - name: Build, tag, and push image to ECR
         run: |
           # Define variables
-          IMAGE_URI="026090559700.dkr.ecr.us-east-1.amazonaws.com/dev-app:latest"
+          IMAGE_URI="026090559700.dkr.ecr.us-east-1.amazonaws.com/dev-app"
 
           # Build Docker image
           docker build -t $IMAGE_URI .
