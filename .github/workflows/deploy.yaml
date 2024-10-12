@@ -30,9 +30,6 @@ jobs:
           # Define your S3 bucket name
           S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
 
-          # Sync the 'public' folder (or other static assets) to the S3 bucket
-          aws s3 sync ./public s3://$S3_BUCKET_NAME/public --acl public-read --delete
-
       - name: Build, tag, and push image to ECR
         run: |
           # Define variables
