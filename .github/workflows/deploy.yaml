@@ -36,7 +36,7 @@ jobs:
           S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
 
           # Sync the .next/static folder to S3
-          aws s3 sync .next/static s3://$S3_BUCKET_NAME/_next/static --acl public-read --delete
+          aws s3 sync .next/static s3://$S3_BUCKET_NAME/_next/static --delete
 
       - name: Log in to Amazon ECR
         id: login-ecr
