@@ -30,6 +30,8 @@ jobs:
           # Define your S3 bucket name
           S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
 
+          aws s3 sync .next/static s3://${{ secrets.S3_BUCKET_NAME }}/_next/static --acl public-read --delete
+
       - name: Build, tag, and push image to ECR
         run: |
           # Define variables
