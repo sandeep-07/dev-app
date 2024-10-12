@@ -21,17 +21,6 @@ jobs:
       - name: Install AWS CLI
         run: sudo apt-get update && sudo apt-get install -y awscli
 
-      - name: Upload static assets to S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-        run: |
-          # Define your S3 bucket name
-          S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
-
-          aws s3 sync .next/static s3://${{ secrets.S3_BUCKET_NAME }}/_next/static --acl public-read --delete
-
       - name: Build, tag, and push image to ECR
         run: |
           # Define variables
@@ -46,6 +35,17 @@ jobs:
           # Push both tags
           docker push $IMAGE_URI:latest
           docker push $IMAGE_URI:${{ github.sha }}
+
+      - name: Upload static assets to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          # Define your S3 bucket name
+          S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
+
+          aws s3 sync .next/static s3://${{ secrets.S3_BUCKET_NAME }}/_next/static --acl public-read --delete
 
       - name: Update ECS service
         run: |
