@@ -14,27 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js app
+        run: npm run build
 
       - name: Install AWS CLI
         run: sudo apt-get update && sudo apt-get install -y awscli
-
-      - name: Build, tag, and push image to ECR
-        run: |
-          # Define variables
-          IMAGE_URI="026090559700.dkr.ecr.us-east-1.amazonaws.com/dev-app"
-
-          # Build Docker image
-          docker build -t $IMAGE_URI .
-
-          # Tag image
-          docker tag $IMAGE_URI:latest $IMAGE_URI:${{ github.sha }}
-
-          # Push both tags
-          docker push $IMAGE_URI:latest
-          docker push $IMAGE_URI:${{ github.sha }}
 
       - name: Upload static assets to S3
         env:
@@ -45,7 +35,27 @@ jobs:
           # Define your S3 bucket name
           S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
 
-          aws s3 sync .next/static s3://${{ secrets.S3_BUCKET_NAME }}/_next/static --acl public-read --delete
+          # Sync the .next/static folder to S3
+          aws s3 sync .next/static s3://$S3_BUCKET_NAME/_next/static --acl public-read --delete
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to ECR
+        run: |
+          # Define variables
+          IMAGE_URI="026090559700.dkr.ecr.us-east-1.amazonaws.com/dev-app"
+
+          # Build Docker image (use the build artifacts already generated)
+          docker build -t $IMAGE_URI .
+
+          # Tag image
+          docker tag $IMAGE_URI:latest $IMAGE_URI:${{ github.sha }}
+
+          # Push both tags
+          docker push $IMAGE_URI:latest
+          docker push $IMAGE_URI:${{ github.sha }}
 
       - name: Update ECS service
         run: |
