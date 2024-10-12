@@ -37,10 +37,10 @@ jobs:
           docker push $IMAGE_URI:${{ github.sha }}
 
       - name: Upload static assets to S3
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ vars.AWS_REGION }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
         run: |
           # Define your S3 bucket name
           S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}"
